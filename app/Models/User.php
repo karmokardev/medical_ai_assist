@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function conversations()
+{
+    return $this->hasMany(\App\Models\Conversation::class);
+}
 }

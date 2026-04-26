@@ -24,6 +24,12 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
         ]);
 
-        $this->call(MedicineSeeder::class);
+        
+
+        $this->call([
+            MedicineSeeder::class,
+            MedicineCSVSeeder::class,
+        ]);
+
     }
 }

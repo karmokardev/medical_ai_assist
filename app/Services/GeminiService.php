@@ -13,31 +13,31 @@ class GeminiService
     public function __construct()
     {
         $this->apiKey = config('services.gemini.key');
-        $this->apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+        $this->apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
     }
 
     public function chat(string $userMessage): array
     {
-        $systemPrompt = "
-            তুমি একজন বাংলাদেশী healthcare assistant।
-            User যখন symptoms বলবে, তুমি:
-            1. সম্ভাব্য সমস্যা বলবে
-            2. কোন ধরনের ডাক্তার দেখাতে হবে বলবে
-            3. সাধারণ medicine suggest করবে (শুধু generic name দিয়ে)
-            4. সবসময় বাংলায় উত্তর দেবে
-            5. সবশেষে disclaimer দেবে
+        $systemPrompt = "তুমি একজন বাংলাদেশী healthcare assistant। User এর symptoms শুনে বাংলায় উত্তর দেবে।
 
-            IMPORTANT: Response এর শেষে এই format এ medicine list দেবে:
-            MEDICINES: medicine1, medicine2, medicine3
+তোমার response এর শেষে অবশ্যই নিচের format এ medicine লিখবে:
+MEDICINES: [generic_name_1], [generic_name_2], [generic_name_3]
 
-            মনে রাখবে তুমি doctor না, শুধু সাধারণ পরামর্শ দিতে পারবে।
-        ";
+যেমন গলা ব্যথার জন্য হলে লিখবে:
+MEDICINES: Paracetamol, Cetirizine, Ambroxol
 
-        $response = Http::post("{$this->apiUrl}?key={$this->apiKey}", [
+উত্তরের format:
+**সম্ভাব্য সমস্যা:** এখানে লেখো
+**করণীয়:** এখানে লেখো  
+**কোন ডাক্তার:** এখানে লেখো
+**সতর্কতা:** এটি professional advice নয়, ডাক্তার দেখান।
+MEDICINES: এখানে comma দিয়ে generic medicine name লেখো (English এ)";
+
+        $response = Http::timeout(30)->post("{$this->apiUrl}?key={$this->apiKey}", [
             'contents' => [
                 [
                     'parts' => [
-                        ['text' => $systemPrompt . "\n\nUser: " . $userMessage]
+                        ['text' => $systemPrompt . "\n\nUser এর সমস্যা: " . $userMessage]
                     ]
                 ]
             ]
@@ -45,10 +45,7 @@ class GeminiService
 
         $text = $response->json('candidates.0.content.parts.0.text') ?? 'দুঃখিত, এখন উত্তর দেওয়া সম্ভব হচ্ছে না।';
 
-        // Medicine extract করো
         $medicines = $this->extractMedicines($text);
-
-        // MEDICINES: line টা response থেকে সরাও
         $cleanText = preg_replace('/MEDICINES:.*$/m', '', $text);
 
         return [
@@ -67,12 +64,13 @@ class GeminiService
         $found = [];
 
         foreach ($names as $name) {
+            if (empty($name)) continue;
             $medicine = Medicine::where('generic_name', 'like', '%' . $name . '%')
                 ->orWhere('name', 'like', '%' . $name . '%')
                 ->first();
 
             if ($medicine) {
-                $found[] = $medicine;
+                $found[] = $medicine->toArray();
             }
         }
 
