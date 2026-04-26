@@ -22,9 +22,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/medicines', [MedicineController::class, 'index'])->name('medicines.index');
 Route::get('/medicines/{medicine}', [MedicineController::class, 'show'])->name('medicines.show');
+Route::get('/medicines/search', [MedicineController::class, 'search'])->name('medicines.search');
 
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/medicines', [AdminController::class, 'medicines'])->name('medicines');
     Route::get('/users', [AdminController::class, 'users'])->name('users');

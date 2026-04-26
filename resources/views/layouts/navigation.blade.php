@@ -1,109 +1,153 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="flex items-center shrink-0">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block w-auto text-gray-800 fill-current h-9" />
+<nav class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+    <div class="px-4 mx-auto max-w-7xl">
+        <div class="flex items-center justify-between h-16">
+
+            {{-- Logo --}}
+            <div class="flex items-center gap-8">
+                <a href="{{ url('/') }}" class="flex items-center gap-2">
+                    <div class="flex items-center justify-center text-lg text-white shadow w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl">
+                        🏥
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Medi<span class="text-blue-600">Assist</span></span>
+                </a>
+
+                {{-- Desktop Nav Links --}}
+                <div class="items-center hidden gap-1 md:flex">
+                    <a href="{{ url('/') }}"
+                       class="px-4 py-2 rounded-xl text-sm font-medium transition
+                       {{ request()->is('/') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        🏠 Home
                     </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <x-nav-link :href="route('medicines.index')" :active="request()->routeIs('medicines.*')">
-                    💊 Medicines
-                </x-nav-link>
-                <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.*')">
-                    💬 AI Chat
-                </x-nav-link>
-                <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                    ⚙️ Admin
-                </x-nav-link>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    <a href="{{ route('medicines.index') }}"
+                       class="px-4 py-2 rounded-xl text-sm font-medium transition
+                       {{ request()->routeIs('medicines.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        💊 Medicines
+                    </a>
+                    @auth
+                    <a href="{{ route('chat.index') }}"
+                       class="px-4 py-2 rounded-xl text-sm font-medium transition
+                       {{ request()->routeIs('chat.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        💬 AI Chat
+                    </a>
+                    @if(Auth::user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="px-4 py-2 rounded-xl text-sm font-medium transition
+                           {{ request()->routeIs('admin.*') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            ⚙️ Admin
+                        </a>
+                    @endif
+                    @endauth
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none">
-                            <div>{{ Auth::check() ? Auth::user()->name : 'Guest' }}</div>
+            {{-- Right Side --}}
+            <div class="flex items-center gap-3">
+                @auth
+                    <button class="flex items-center justify-center text-gray-500 transition w-9 h-9 rounded-xl hover:bg-gray-100">
+                        🔔
+                    </button>
 
-                            <div class="ms-1">
-                                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
+                    {{-- User Dropdown --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open"
+                                class="flex items-center gap-2 px-3 py-2 transition bg-gray-100 hover:bg-gray-200 rounded-xl">
+                            <div class="flex items-center justify-center text-xs font-bold text-white rounded-lg w-7 h-7 bg-gradient-to-br from-blue-500 to-indigo-500">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
+                            <span class="hidden text-sm font-medium text-gray-700 md:block">
+                                {{ Str::limit(Auth::user()->name, 12) }}
+                            </span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </button>
-                    </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                        {{-- Dropdown --}}
+                        <div x-show="open"
+                             @click.away="open = false"
+                             x-transition
+                             class="absolute right-0 z-50 py-2 mt-2 bg-white border border-gray-100 shadow-xl w-52 rounded-2xl">
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-gray-400 truncate">{{ Auth::user()->email }}</p>
+                                <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded-full
+                                    {{ Auth::user()->isAdmin() ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
+                                    {{ Auth::user()->isAdmin() ? '👑 Admin' : '👤 User' }}
+                                </span>
+                            </div>
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+                            <a href="{{ route('profile.edit') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition">
+                                <span>👤</span> Profile
+                            </a>
+                            <a href="{{ route('chat.index') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition">
+                                <span>💬</span> My Chats
+                            </a>
 
-            <!-- Hamburger -->
-            <div class="flex items-center -me-2 sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500">
-                    <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                            {{-- শুধু Admin দেখবে --}}
+                            @if(Auth::user()->isAdmin())
+                                <a href="{{ route('admin.dashboard') }}"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 hover:bg-purple-50 transition">
+                                    <span>⚙️</span> Admin Panel
+                                </a>
+                            @endif
+
+                            <div class="pt-2 mt-2 border-t border-gray-100">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition w-full text-left">
+                                        <span>🚪</span> Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 text-sm font-medium text-gray-600 transition hover:text-blue-600 rounded-xl hover:bg-gray-100">
+                        Login
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="px-4 py-2 text-sm font-medium text-white transition shadow bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:opacity-90">
+                        🚀 Register
+                    </a>
+                @endauth
+
+                {{-- Mobile menu button --}}
+                <button class="flex items-center justify-center text-gray-500 md:hidden w-9 h-9 rounded-xl hover:bg-gray-100"
+                        x-data
+                        @click="$dispatch('toggle-menu')">
+                    ☰
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="text-base font-medium text-gray-800">{{ Auth::check() ? Auth::user()->name : 'Guest' }}</div>
-                <div class="text-sm font-medium text-gray-500">{{ Auth::check() ? Auth::user()->name : 'Guest' }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
+    {{-- Mobile Menu --}}
+    <div class="border-t border-gray-100 md:hidden"
+         x-data="{ open: false }"
+         @toggle-menu.window="open = !open"
+         x-show="open"
+         x-transition>
+        <div class="px-4 py-3 space-y-1">
+            <a href="{{ url('/') }}" class="block px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-100">🏠 Home</a>
+            <a href="{{ route('medicines.index') }}" class="block px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-100">💊 Medicines</a>
+            @auth
+                <a href="{{ route('chat.index') }}" class="block px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-100">💬 AI Chat</a>
+                @if(Auth::user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 rounded-xl text-sm text-purple-600 hover:bg-purple-50">⚙️ Admin</a>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    <button type="submit" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50">🚪 Logout</button>
                 </form>
-            </div>
+            @else
+                <a href="{{ route('login') }}" class="block px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-gray-100">Login</a>
+                <a href="{{ route('register') }}" class="block px-4 py-2.5 rounded-xl text-sm text-blue-600 hover:bg-blue-50">🚀 Register</a>
+            @endauth
         </div>
     </div>
 </nav>
