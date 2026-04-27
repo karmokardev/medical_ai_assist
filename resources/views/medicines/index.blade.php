@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">💊 Medicine Database</h2>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">💊 Medicine Database</h2>
     </x-slot>
 
     {{-- Hero --}}
@@ -15,10 +15,10 @@
                     name="search"
                     value="{{ request('search') }}"
                     placeholder="🔍 Medicine নাম, generic name বা company লিখুন..."
-                    class="flex-1 rounded-2xl border-0 px-5 py-3.5 text-gray-800 shadow-xl focus:ring-2 focus:ring-white text-sm"
+                    class="flex-1 rounded-2xl border-0 px-5 py-3.5 text-gray-800 dark:text-gray-100 shadow-xl focus:ring-2 focus:ring-white text-sm"
                 />
                 <button type="submit"
-                        class="bg-white text-blue-600 font-bold px-6 py-3.5 rounded-2xl hover:bg-blue-50 shadow-xl whitespace-nowrap">
+                        class="bg-white dark:bg-gray-800 text-blue-600 font-bold px-6 py-3.5 rounded-2xl hover:bg-blue-50 shadow-xl whitespace-nowrap">
                     Search
                 </button>
                 @if(request()->hasAny(['search', 'category', 'manufacturer', 'price_min', 'price_max']))
@@ -31,8 +31,8 @@
             <div class="flex flex-wrap justify-center gap-2 mt-6">
                 @foreach($categories as $label => $value)
                     <a href="{{ route('medicines.index', ['category' => $value]) }}"
-                       class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-sm px-4 py-2 rounded-full transition backdrop-blur-sm border border-white border-opacity-30
-                       {{ request('category') == $value ? 'bg-white text-blue-600 bg-opacity-100' : '' }}">
+                       class="bg-white dark:bg-gray-800 bg-opacity-20 hover:bg-opacity-30 text-white text-sm px-4 py-2 rounded-full transition backdrop-blur-sm border border-white border-opacity-30
+                       {{ request('category') == $value ? 'bg-white dark:bg-gray-800 text-blue-600 bg-opacity-100' : '' }}">
                         {{ $label }}
                     </a>
                 @endforeach
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div class="min-h-screen py-8 bg-gray-50">
+    <div class="min-h-screen py-8 bg-gray-50 dark:bg-gray-900">
         <div class="px-4 mx-auto max-w-7xl">
             <div class="flex flex-col gap-6 lg:flex-row">
 
@@ -54,8 +54,8 @@
                         @endif
 
                         {{-- Price Filter --}}
-                        <div class="p-5 mb-4 bg-white shadow rounded-2xl">
-                            <h3 class="mb-3 font-bold text-gray-700">💰 Price Filter</h3>
+                        <div class="p-5 mb-4 bg-white dark:bg-gray-800 shadow rounded-2xl">
+                            <h3 class="mb-3 font-bold text-gray-700 dark:text-gray-200">💰 Price Filter</h3>
                             <div class="flex items-center gap-2">
                                 <input type="number" name="price_min" value="{{ request('price_min') }}"
                                        placeholder="Min ৳"
@@ -78,8 +78,8 @@
                         </div>
 
                         {{-- Company Filter --}}
-                        <div class="p-5 mb-4 bg-white shadow rounded-2xl">
-                            <h3 class="mb-3 font-bold text-gray-700">🏭 Company</h3>
+                        <div class="p-5 mb-4 bg-white dark:bg-gray-800 shadow rounded-2xl">
+                            <h3 class="mb-3 font-bold text-gray-700 dark:text-gray-200">🏭 Company</h3>
                             <select name="manufacturer"
                                     class="w-full text-sm border-gray-200 rounded-xl focus:ring-blue-500">
                                 <option value="">সব Company</option>
@@ -119,7 +119,7 @@
                     {{-- Active Filters --}}
                     @if(request()->hasAny(['search', 'category', 'manufacturer', 'price_min', 'price_max']))
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="self-center text-sm text-gray-500">Active filters:</span>
+                            <span class="self-center text-sm text-gray-500 dark:text-gray-400">Active filters:</span>
                             @if(request('search'))
                                 <span class="px-3 py-1 text-sm text-blue-700 bg-blue-100 rounded-full">
                                     🔍 "{{ request('search') }}"
@@ -143,7 +143,7 @@
                         </div>
                     @endif
 
-                    <p class="mb-4 text-sm text-gray-500">
+                    <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
                         মোট <span class="font-bold text-blue-600">{{ number_format($medicines->total()) }}</span> টি medicine পাওয়া গেছে
                     </p>
 
@@ -165,7 +165,7 @@
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                         @forelse($medicines as $index => $medicine)
                             @php $grad = $gradients[($medicine->id) % count($gradients)]; @endphp
-                            <div class="overflow-hidden transition-all duration-300 bg-white shadow cursor-pointer rounded-2xl hover:shadow-xl group"
+                            <div class="overflow-hidden transition-all duration-300 bg-white dark:bg-gray-800 shadow cursor-pointer rounded-2xl hover:shadow-xl group"
                                  onclick="window.location='{{ route('medicines.show', $medicine) }}'">
 
                                 {{-- Gradient Header --}}
@@ -175,7 +175,7 @@
                                             {{ $medicine->name }}
                                         </h3>
                                         @if($medicine->price)
-                                            <span class="px-2 py-1 ml-2 text-sm font-bold text-white bg-white rounded-lg bg-opacity-20 whitespace-nowrap">
+                                            <span class="px-2 py-1 ml-2 text-sm font-bold text-white bg-white dark:bg-gray-800 rounded-lg bg-opacity-20 whitespace-nowrap">
                                                 ৳{{ number_format($medicine->price, 2) }}
                                             </span>
                                         @endif
@@ -191,24 +191,24 @@
                                         @if($medicine->strength)
                                             <div class="flex items-center gap-2">
                                                 <span class="text-gray-400">💪</span>
-                                                <span class="text-gray-600">{{ $medicine->strength }}</span>
+                                                <span class="text-gray-600 dark:text-gray-300">{{ $medicine->strength }}</span>
                                             </div>
                                         @endif
                                         @if($medicine->manufacturer)
                                             <div class="flex items-center gap-2">
                                                 <span class="text-gray-400">🏭</span>
-                                                <span class="text-gray-600 truncate">{{ $medicine->manufacturer }}</span>
+                                                <span class="text-gray-600 dark:text-gray-300 truncate">{{ $medicine->manufacturer }}</span>
                                             </div>
                                         @endif
                                         @if($medicine->description)
                                             <div class="flex items-start gap-2">
                                                 <span class="text-gray-400">📋</span>
-                                                <span class="text-xs text-gray-500 line-clamp-2">{{ Str::limit($medicine->description, 80) }}</span>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{{ Str::limit($medicine->description, 80) }}</span>
                                             </div>
                                         @endif
                                     </div>
 
-                                    <div class="flex items-center justify-between pt-3 mt-4 border-t border-gray-100">
+                                    <div class="flex items-center justify-between pt-3 mt-4 border-t border-gray-100 dark:border-gray-700">
                                         @if($medicine->category)
                                             <span class="px-2 py-1 text-xs text-blue-600 rounded-full bg-blue-50">
                                                 {{ $medicine->category }}
@@ -223,9 +223,9 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="col-span-3 py-16 text-center bg-white rounded-2xl">
+                            <div class="col-span-3 py-16 text-center bg-white dark:bg-gray-800 rounded-2xl">
                                 <div class="mb-4 text-6xl">🔍</div>
-                                <p class="text-lg font-medium text-gray-500">কোনো medicine পাওয়া যায়নি</p>
+                                <p class="text-lg font-medium text-gray-500 dark:text-gray-400">কোনো medicine পাওয়া যায়নি</p>
                                 <a href="{{ route('medicines.index') }}"
                                    class="inline-block mt-2 text-blue-600 hover:underline">
                                     সব medicine দেখুন
@@ -247,7 +247,7 @@ const searchInput = document.querySelector('input[name="search"]');
 if (searchInput) {
     let timeout;
     let dropdown = document.createElement('div');
-    dropdown.className = 'absolute bg-white rounded-2xl shadow-xl border border-gray-100 w-full mt-1 z-50 hidden max-h-64 overflow-y-auto';
+    dropdown.className = 'absolute bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 w-full mt-1 z-50 hidden max-h-64 overflow-y-auto';
     searchInput.parentElement.style.position = 'relative';
     searchInput.parentElement.appendChild(dropdown);
 
@@ -264,9 +264,9 @@ if (searchInput) {
 
             dropdown.innerHTML = data.map(m => `
                 <a href="/medicines/${m.id}"
-                   class="flex items-center justify-between px-4 py-3 transition border-b hover:bg-blue-50 border-gray-50 last:border-0">
+                   class="flex items-center justify-between px-4 py-3 transition border-b dark:border-gray-700 hover:bg-blue-50 border-gray-50 last:border-0">
                     <div>
-                        <p class="text-sm font-medium text-gray-800">${m.name}</p>
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-100">${m.name}</p>
                         <p class="text-xs text-gray-400">${m.generic_name || ''}</p>
                     </div>
                     ${m.price ? `<span class="text-sm font-bold text-green-600">৳${m.price}</span>` : ''}

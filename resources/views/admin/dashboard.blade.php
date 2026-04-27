@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800">⚙️ Admin Dashboard</h2>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">⚙️ Admin Dashboard</h2>
     </x-slot>
 
     <div class="py-8">
@@ -8,36 +8,36 @@
 
             {{-- Stats --}}
             <div class="grid grid-cols-2 gap-4 mb-8 md:grid-cols-4">
-                <div class="p-6 text-center bg-white shadow rounded-2xl">
+                <div class="p-6 text-center bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="text-3xl font-bold text-blue-600">{{ $stats['users'] }}</div>
-                    <div class="mt-1 text-sm text-gray-500">👤 Total Users</div>
+                    <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">👤 Total Users</div>
                 </div>
-                <div class="p-6 text-center bg-white shadow rounded-2xl">
+                <div class="p-6 text-center bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="text-3xl font-bold text-green-600">{{ $stats['medicines'] }}</div>
-                    <div class="mt-1 text-sm text-gray-500">💊 Medicines</div>
+                    <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">💊 Medicines</div>
                 </div>
-                <div class="p-6 text-center bg-white shadow rounded-2xl">
+                <div class="p-6 text-center bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="text-3xl font-bold text-purple-600">{{ $stats['conversations'] }}</div>
-                    <div class="mt-1 text-sm text-gray-500">💬 Conversations</div>
+                    <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">💬 Conversations</div>
                 </div>
-                <div class="p-6 text-center bg-white shadow rounded-2xl">
+                <div class="p-6 text-center bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="text-3xl font-bold text-orange-600">{{ $stats['messages'] }}</div>
-                    <div class="mt-1 text-sm text-gray-500">✉️ Messages</div>
+                    <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">✉️ Messages</div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {{-- Recent Users --}}
-                <div class="p-6 bg-white shadow rounded-2xl">
+                <div class="p-6 bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-semibold text-gray-700">👤 Recent Users</h3>
+                        <h3 class="font-semibold text-gray-700 dark:text-gray-200">👤 Recent Users</h3>
                         <a href="{{ route('admin.users') }}" class="text-sm text-blue-600 hover:underline">সব দেখুন</a>
                     </div>
                     <div class="space-y-3">
                         @foreach($recentUsers as $user)
                             <div class="flex items-center justify-between py-2 border-b">
                                 <div>
-                                    <p class="font-medium text-gray-800">{{ $user->name }}</p>
+                                    <p class="font-medium text-gray-800 dark:text-gray-100">{{ $user->name }}</p>
                                     <p class="text-xs text-gray-400">{{ $user->email }}</p>
                                 </div>
                                 <span class="text-xs text-gray-400">{{ $user->created_at->diffForHumans() }}</span>
@@ -47,15 +47,15 @@
                 </div>
 
                 {{-- Recent Conversations --}}
-                <div class="p-6 bg-white shadow rounded-2xl">
+                <div class="p-6 bg-white dark:bg-gray-800 shadow rounded-2xl">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-semibold text-gray-700">💬 Recent Conversations</h3>
+                        <h3 class="font-semibold text-gray-700 dark:text-gray-200">💬 Recent Conversations</h3>
                     </div>
                     <div class="space-y-3">
                         @foreach($recentConversations as $conv)
                             <div class="flex items-center justify-between py-2 border-b">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-800">{{ $conv->title }}</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ $conv->title }}</p>
                                     <p class="text-xs text-gray-400">{{ $conv->user->name }}</p>
                                 </div>
                                 <span class="text-xs text-gray-400">{{ $conv->created_at->diffForHumans() }}</span>
